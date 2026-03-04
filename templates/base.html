@@ -1,40 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-        <title>{{ title }}</title>
-    </head>
-    <body>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+          crossorigin="anonymous">
+    <title>{{title}}</title>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-light bg-light">
         <h1>Миссия Колонизация Марса</h1>
-        <h4>И на Марсе будут яблони цвести!</h4>
-        {% if proffesion %}
-            {% if "инженер" in proffesion or "строитель" in proffesion %}
-                <h2>Инженерные тренажеры</h2>
-                <img src="{{ url_for('static', filename='images/map_for_it.jpg') }}" >
-            {% else %}
-                <h2>Научные симуляторы</h2>
-                <img src="{{ url_for('static', filename='images/map_for_ns.jpg') }}" >
-            {% endif %}
-        {% endif %}
-        {% set prof_list = ['инженер-исследователь', "пилот", "строитель", "экзобиолог", "врач",
-          "инженер по терраформированию",
-          "климатолог", "специалист по радиационной защите", "астрогеолог", "гляциолог", "инженер жизнеобеспечения",
-          "метеоролог", "оператор марсохода", "киберинженер", "штурман", "пилот дронов"] %}
-        {% if how %}
-            <h2>Список профессий</h2>
-            {% if how == 'ol' %}
-                <ol>
-                    {% for item in prof_list %}
-                        <li>{{ item }}</li>
-                    {% endfor %}
-                </ol>
-            {% elif how == 'ul' %}
-                <ul>
-                    {% for item in prof_list %}
-                        <li>{{ item }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endif %}
-    </body>
+        <a class="navbar-brand" href="#"></a>
+    </nav>
+</header>
+<!-- Begin page content -->
+<main role="main" class="container">
+    <h4>И на Марсе будут яблони цвести!</h4>
+    {% block content %}{% endblock %}
+</main>
+</body>
 </html>

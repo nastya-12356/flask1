@@ -3,10 +3,12 @@ from flask import Flask, url_for, request, render_template
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
-
-@app.route('/index/<name>')
-def index(name):
-    return render_template('base.html', title=name)
+@app.route('/<title>')
+@app.route('/index/<title>')
+def index(title):
+    param = {}
+    param['title'] = title
+    return render_template('index.html', **param)
 
 
 @app.route('/training/<prof>')
