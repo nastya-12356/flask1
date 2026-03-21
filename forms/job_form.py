@@ -9,5 +9,5 @@ class NewsJob(FlaskForm):
     id = StringField('Team Leader id', validators=[DataRequired()])
     work_size = IntegerField('Work Size', validators=[DataRequired()])
     collaborators = StringField('Collaborators', validators=[DataRequired()])
-    is_job_finished = BooleanField('Job Finished', validators=[DataRequired()])
+    is_job_finished = BooleanField('Job Finished')
     submit = SubmitField('Submit')
