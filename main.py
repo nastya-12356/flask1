@@ -1,15 +1,18 @@
 import os
 
-from flask import Flask, url_for, request, render_template, redirect
+from flask import Flask, url_for, request, render_template, redirect, abort
 from data import db_session
 from data.users import User
 from data.jobs import Jobs
+from data.news import News
 from add_users import insert_users
 from add_jobs import insert_jobs
 from forms.register_user import RegisterForm
 from forms.login_user import LoginForm
+from forms.news import NewsForm
+from forms.job_form import NewsJob
 from flask_login import LoginManager, login_user
-from flask_login import login_required, logout_user
+from flask_login import login_required, logout_user, current_user
 
 db_sess = db_session.create_session()
 db_session.global_init("db/mars_explorer.db")
@@ -359,6 +362,11 @@ def index():
         names[user.id] = f'{user.surname} {user.name}'
     param = {}
     param['title'] = 'main'
+    if current_user.is_authenticated:
+        news = db_sess.query(News).filter(
+            (News.user == current_user) | (News.is_private != True))
+    else:
+        news = db_sess.query(News).filter(News.is_private != True)
     return render_template('index.html', jobs=jobs, names=names, **param)
 
 
@@ -441,11 +449,31 @@ def login():
                                form=form)
     return render_template('login.html', title='Авторизация', form=form)
 
+
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect("/")
+
+
+@app.route('/addjob', methods=['GET', 'POST'])
+@login_required
+def add_job():
+    form = NewsJob()
+    if form.validate_on_submit():
+        jobs = Jobs()
+        jobs.job = form.title.data
+        jobs.team_leader = form.id.data
+        jobs.work_size = form.work_size.data
+        jobs.collaborators = form.collaborators.data
+        jobs.is_finished = form.is_job_finished.data
+        db_sess.add(jobs)
+        db_sess.commit()
+        return redirect('/')
+    return render_template('add_job.html', title='Adding a Job',
+                           form=form)
+
 
 if __name__ == '__main__':
     app.run(port=8080, host='127.0.0.1')
