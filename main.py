@@ -5,12 +5,14 @@ from data import db_session
 from data.users import User
 from data.jobs import Jobs
 from data.news import News
+from data.departments import Department
 from add_users import insert_users
 from add_jobs import insert_jobs
 from forms.register_user import RegisterForm
 from forms.login_user import LoginForm
 from forms.news import NewsForm
 from forms.job_form import NewsJob
+from forms.departments_form import NewsDepartment
 from flask_login import LoginManager, login_user
 from flask_login import login_required, logout_user, current_user
 
@@ -509,7 +511,7 @@ def edit_jobs(id):
         else:
             abort(404)
     return render_template('edit_job.html',
-                           title='Редактирование работы',
+                           title='Edit Job',
                            form=form
                            )
 
@@ -527,6 +529,87 @@ def jobs_delete(id):
     else:
         abort(404)
     return redirect('/')
+
+
+@app.route('/departments')
+def departments():
+    departments = db_sess.query(Department).all()
+    users = db_sess.query(User).all()
+    names = {}
+    for user in users:
+        names[user.id] = f'{user.surname} {user.name}'
+    param = {}
+    param['title'] = 'main'
+    return render_template('departments.html', departments=departments, names=names, **param)
+
+
+@app.route('/add_department', methods=['GET', 'POST'])
+@login_required
+def add_department():
+    form = NewsDepartment()
+    if form.validate_on_submit():
+        departments = Department()
+        departments.title = form.title.data
+        departments.chief = form.chief.data
+        departments.email = form.email.data
+        departments.members = form.members.data
+        db_sess.add(departments)
+        db_sess.commit()
+        return redirect('/departments')
+    return render_template('add_department.html', title='Adding a Department',
+                           form=form)
+
+
+@app.route('/departments/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_departments(id):
+    form = NewsDepartment()
+    if request.method == "GET":
+        db_sess = db_session.create_session()
+        departments = db_sess.query(Department).filter(Department.id == id,
+                                                       (Department.chief == current_user.id) | (current_user.id == 1)
+                                                       ).first()
+        if departments:
+            form.chief.data = departments.chief
+            form.title.data = departments.title
+            form.email.data = departments.email
+            form.members.data = departments.members
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        db_sess = db_session.create_session()
+        departments = db_sess.query(Department).filter(Department.id == id,
+                                                       (Department.chief == current_user.id) | (current_user.id == 1)
+                                                       ).first()
+        if departments:
+            departments.chief = form.chief.data
+            departments.title = form.title.data
+            departments.email = form.email.data
+            departments.members = form.members.data
+            db_sess.merge(departments)
+            db_sess.commit()
+            return redirect('/departments')
+        else:
+            abort(404)
+    return render_template('edit_department.html',
+                           title='Edit Department',
+                           form=form
+                           )
+
+
+@app.route('/departments_delete/<int:id>', methods=['GET', 'POST'])
+@login_required
+def departments_delete(id):
+    db_sess = db_session.create_session()
+    departments = db_sess.query(Department).filter(Department.id == id,
+                                                   (Department.chief == current_user.id) | (current_user.id == 1)
+                                                   ).first()
+    if departments:
+        db_sess.delete(departments)
+        db_sess.commit()
+    else:
+        abort(404)
+    return redirect('/departments')
 
 
 if __name__ == '__main__':
