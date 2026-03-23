@@ -10,11 +10,11 @@ from add_users import insert_users
 from add_jobs import insert_jobs
 from forms.register_user import RegisterForm
 from forms.login_user import LoginForm
-from forms.news import NewsForm
 from forms.job_form import NewsJob
 from forms.departments_form import NewsDepartment
 from flask_login import LoginManager, login_user
 from flask_login import login_required, logout_user, current_user
+import json
 
 db_sess = db_session.create_session()
 db_session.global_init("db/mars_explorer.db")
@@ -610,6 +610,13 @@ def departments_delete(id):
     else:
         abort(404)
     return redirect('/departments')
+
+
+@app.route('/member')
+def member():
+    with open('templates/personal.json', encoding='utf-8') as cat_file:
+        data = json.load(cat_file)
+    return render_template('member.html', data=data)
 
 
 if __name__ == '__main__':

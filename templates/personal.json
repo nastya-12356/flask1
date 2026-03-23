@@ -1,0 +1,18 @@
+[{
+  "name": "Энди",
+  "surname": "Уир",
+  "link_photo": "https://avatars.mds.yandex.net/get-yapic/45131/jrWeU8aWH19s7w1RdrRJ3tyG5tA-1/orig",
+  "list_of_specialties": ["астрогеолог", "специалист по радиционной защите"]
+},
+{
+  "name": "Ридли",
+  "surname": "Скотт",
+  "link_photo": "https://i.pinimg.com/736x/e1/76/4c/e1764cff4e0ff91b24666fa266a1ac23.jpg",
+  "list_of_specialties": ["капитан", "главный по кораблю"]
+},
+{
+  "name": "Марк",
+  "surname": "Уотни",
+  "link_photo": "https://avatars.githubusercontent.com/u/46920828?v=4",
+  "list_of_specialties": ["космический биолог", "программист"]
+}]

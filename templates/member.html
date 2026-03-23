@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% set slovar = data | random %}
+    <h1>{{ slovar["name"] }} {{ slovar["surname"]  }}</h1>
+    <img src="{{ slovar['link_photo'] }}" style="width: 500px; height: 500px;">
+    <h5>{{ ', '.join(slovar['list_of_specialties']) }}</h5>
+{% endblock %}
