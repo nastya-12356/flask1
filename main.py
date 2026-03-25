@@ -6,8 +6,7 @@ from data.users import User
 from data.jobs import Jobs
 from data.news import News
 from data.departments import Department
-from add_users import insert_users
-from add_jobs import insert_jobs
+from data.category import Category
 from forms.register_user import RegisterForm
 from forms.login_user import LoginForm
 from forms.job_form import NewsJob
@@ -16,8 +15,8 @@ from flask_login import LoginManager, login_user
 from flask_login import login_required, logout_user, current_user
 import json
 
-db_sess = db_session.create_session()
 db_session.global_init("db/mars_explorer.db")
+db_sess = db_session.create_session()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
@@ -463,6 +462,8 @@ def logout():
 @login_required
 def add_job():
     form = NewsJob()
+    categories = db_sess.query(Category).all()
+    form.categories.choices = [(c.id, c.name) for c in categories]
     if form.validate_on_submit():
         jobs = Jobs()
         jobs.job = form.title.data
@@ -470,6 +471,8 @@ def add_job():
         jobs.work_size = form.work_size.data
         jobs.collaborators = form.collaborators.data
         jobs.is_finished = form.is_job_finished.data
+        category = db_sess.query(Category).filter(Category.id == form.categories.data).first()
+        jobs.categories = [category]
         db_sess.add(jobs)
         db_sess.commit()
         return redirect('/')
@@ -481,6 +484,9 @@ def add_job():
 @login_required
 def edit_jobs(id):
     form = NewsJob()
+    db_sess = db_session.create_session()
+    categories = db_sess.query(Category).all()
+    form.categories.choices = [(c.id, c.name) for c in categories]
     if request.method == "GET":
         db_sess = db_session.create_session()
         jobs = db_sess.query(Jobs).filter(Jobs.id == id,
@@ -492,6 +498,8 @@ def edit_jobs(id):
             form.work_size.data = jobs.work_size
             form.collaborators.data = jobs.collaborators
             form.is_job_finished.data = jobs.is_finished
+            if jobs.categories:
+                form.categories.data = jobs.categories[0].id
         else:
             abort(404)
     if form.validate_on_submit():
@@ -505,6 +513,8 @@ def edit_jobs(id):
             jobs.work_size = form.work_size.data
             jobs.collaborators = form.collaborators.data
             jobs.is_finished = form.is_job_finished.data
+            category = db_sess.query(Category).filter(Category.id == form.categories.data).first()
+            jobs.categories = [category]
             db_sess.merge(jobs)
             db_sess.commit()
             return redirect('/')

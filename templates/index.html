@@ -15,6 +15,7 @@
                     <th scope="col">Team leader</th>
                     <th scope="col">Duration</th>
                     <th scope="col">List of collaborators</th>
+                    <th scope="col">Hazard category</th>
                     <th scope="col">Is finished</th>
                 </tr>
             </thead>
@@ -24,6 +25,11 @@
                     <td>{{ names[job.team_leader] }}</td>
                     <td>{{ job.work_size }}</td>
                     <td>{{ job.collaborators }}</td>
+                    <td>
+                        {% for category in job.categories %}
+                            {{ category.id }}
+                        {% endfor %}
+                    </td>
                     {% if job.is_finished %}
                         <td bgcolor="#7fff00">{{ job.is_finished }}</td>
                     {% else %}
