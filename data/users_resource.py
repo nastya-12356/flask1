@@ -9,7 +9,7 @@ def abort_if_users_not_found(users_id):
     session = db_session.create_session()
     users = session.query(User).get(users_id)
     if not users:
-        abort(404, message=f"News {users_id} not found")
+        abort(404, message=f"Users {users_id} not found")
 
 
 class UsersResource(Resource):
