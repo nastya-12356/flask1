@@ -30,7 +30,7 @@ login_manager.init_app(app)
 answers = {
     'title': 'Анкета',
     'surname': 'Watny',
-    'name': 'Mark',
+    'name': 'Sonya',
     'education': 'выше среднего',
     'profession': 'штурман марсохода',
     'sex': 'male',
